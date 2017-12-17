@@ -3,13 +3,13 @@
 Super basic key-value store
 
 ```
-$ kvp a b
+$ kvput a b
 
-$ kvg a
+$ kvget a
 b
 
-$ kvp -del a
+$ kvput -del a
 
-$ kvg a
+$ kvget a
 2017/12/17 21:49:47 Key a does not exis
 ```
