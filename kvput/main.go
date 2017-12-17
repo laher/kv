@@ -7,6 +7,7 @@ import (
 	"log"
 	"os"
 	"os/user"
+	"strings"
 	"time"
 
 	"github.com/boltdb/bolt"
@@ -56,6 +57,9 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	kvdb.Set(key, string(bytes))
+	err = kvdb.Set(key, strings.TrimSuffix(string(bytes), "\n"))
+	if err != nil {
+		log.Fatal(err)
+	}
 
 }
