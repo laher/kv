@@ -1,0 +1,15 @@
+# kv
+
+Super basic key-value store
+
+```
+$ kvp a b
+
+$ kvg a
+b
+
+$ kvp -del a
+
+$ kvg a
+2017/12/17 21:49:47 Key a does not exis
+```
