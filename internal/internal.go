@@ -47,6 +47,22 @@ func (kv *KeyValue) Get(key string) (string, error) {
 	return val, nil
 }
 
+func (kv *KeyValue) Ls() ([]string, error) {
+	keys := []string{}
+	err := kv.db.Update(func(tx *bolt.Tx) error {
+		bucket := tx.Bucket([]byte(kv.bucket))
+		if bucket == nil {
+			return fmt.Errorf("Bucket %s does not exist", kv.bucket)
+		}
+		err := bucket.ForEach(func(k []byte, v []byte) error {
+			keys = append(keys, string(k))
+			return nil
+		})
+		return err
+	})
+	return keys, err
+}
+
 func (kv *KeyValue) Del(key string) error {
 	return kv.db.Update(func(tx *bolt.Tx) error {
 		bucket := tx.Bucket([]byte(kv.bucket))

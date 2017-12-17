@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os/user"
+	"strings"
 	"time"
 
 	"github.com/boltdb/bolt"
@@ -13,9 +14,11 @@ import (
 )
 
 var (
-	b      = flag.String("bck", "default", "bucket")
 	usr, _ = user.Current()
 	d      = flag.String("db", fmt.Sprintf("%s/.kv.db", usr.HomeDir), "database location")
+	b      = flag.String("bck", "default", "bucket")
+	ls     = flag.Bool("ls", false, "list entries")
+	v      = flag.Bool("v", false, "verbose")
 )
 
 func main() {
@@ -32,6 +35,24 @@ func main() {
 	key := "default"
 	if len(flag.Args()) > 0 {
 		key = flag.Arg(0)
+	}
+	if *ls {
+		keys, err := kvdb.Ls()
+		if err != nil {
+			log.Fatal(err)
+		}
+		for _, key := range keys {
+			if *v {
+				val, err := kvdb.Get(key)
+				if err != nil {
+					log.Fatal(err)
+				}
+				fmt.Printf("%s: %s\n", key, strings.TrimSpace(val))
+			} else {
+				fmt.Println(key)
+			}
+		}
+		return
 	}
 	val, err := kvdb.Get(key)
 	if err != nil {
